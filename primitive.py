@@ -1,40 +1,52 @@
-# Alex's Life Story Using Primitive Data Types
+# Alex's Expanding Life Story
 
 name = "Alex"
 age = 5
 is_student = True
+is_happy = True
 
-favorite_food = "pizza"
 hometown = "Lagos"
+country = "Nigeria"
 
-greeting = "Hello, my name is " + name
-age_statement = "I am " + str(age) + " years old."
+favorite_subject = "Math"
+favorite_food = "Pizza"
 
-next_year_age = age + 1
-future_age_statement = "Next year I will be " + str(next_year_age) + "."
+current_grade = 1
+years_in_school = 12
+graduation_age = age + years_in_school
 
-school_years = 12
-graduation_age = age + school_years
-
-height = 1.1
-growth = 0.6
-adult_height = height + growth
-
-has_job = False
-first_salary = 30000
-salary_raise = 5000
-new_salary = first_salary + salary_raise
+height_child = 1.1
+yearly_growth = 0.07
+years_growth = 10
+height_teen = height_child + (yearly_growth * years_growth)
 
 dream_job = "Software Engineer"
-life_goal = name + " wants to become a " + dream_job
+first_salary = 30000
+bonus = 7000
+total_income = first_salary + bonus
 
-summary = greeting + ". " + age_statement + " I live in " + hometown + " and love " + favorite_food + "."
+monthly_income = total_income / 12
+savings_rate = 0.2
+yearly_savings = total_income * savings_rate
 
-print(summary)
-print(future_age_statement)
-print("I will graduate at age:", graduation_age)
-print("My adult height might be:", adult_height, "meters")
-print("Current student status:", is_student)
-print("Do I have a job?", has_job)
-print("Future salary after raise:", new_salary)
-print("Life goal:", life_goal)
+future_partner = "Jamie"
+future_family = name + " & " + future_partner
+
+identity = name + " from " + hometown + ", " + country
+school_story = "I love " + favorite_subject + " and I am in grade " + str(current_grade)
+growth_story = "At graduation I will be " + str(graduation_age) + " years old."
+career_story = "My dream job is " + dream_job
+money_story = "My yearly savings will be " + str(yearly_savings)
+
+print("Identity:", identity)
+print("Age:", age)
+print("Student status:", is_student)
+print("Happy status:", is_happy)
+print(school_story)
+print(growth_story)
+print("Teen height:", height_teen, "meters")
+print(career_story)
+print("Total income:", total_income)
+print("Monthly income:", monthly_income)
+print(money_story)
+print("Future family:", future_family)
