@@ -1,61 +1,69 @@
 import requests
 import json
 
-# Define the base URL
-url = 'https://api.gbif.org/v1/species/search'
+# Function to get images for a species using taxonKey
+def get_species_images(species_key, image_limit=3):
+    url = 'https://api.gbif.org/v1/occurrence/search'
+    params = {
+        "taxonKey": species_key,
+        "mediaType": "StillImage",
+        "limit": image_limit
+    }
 
-params = {
-    'datasetKey': 'd7dddbf4-2cf0-4f39-9b2a-bb099caae36c',
-    'q': 'kangaroo'
-}
+    response = requests.get(url, params=params)
+    if response.status_code != 200:
+        return []
 
-headers = {
-    'accept': 'application/json'
-}
+    images = []
+    for occurrence in response.json().get('results', []):
+        for media in occurrence.get("media", []):
+            if media.get("identifier"):
+                images.append(media["identifier"])
+    return images
 
-# Send GET request
-response = requests.get(url, headers=headers, params=params)
+# Step 1: Search species using GBIF Species API
+query = "kangaroo"
+species_url = "https://api.gbif.org/v1/species/search"
+species_params = {"q": query, "limit": 50}  # Fetch all species (max 1000 per request)
 
-# Check if request was successful
-if response.status_code == 200:
-    data = response.json()
-    extracted_animals = []
+species_response = requests.get(species_url, params=species_params)
 
-    for animal in data.get("results", []):
-        vernaculars = animal.get("vernacularNames", [])
+if species_response.status_code != 200:
+    print(f"Species search failed: {species_response.status_code}")
+    exit()
 
-        # Try to get first English name
-        best_name = next(
-            (
-                v.get("vernacularName").strip().title()
-                for v in vernaculars
-                if v.get("vernacularName")
-                and (v.get("language") == "eng" or v.get("c") == "eng")
-            ),
-            None
-        )
+species_results = species_response.json().get('results', [])
 
-        # Fallback to first available name if no English found
-        if not best_name:
-            best_name = next(
-                (
-                    v.get("vernacularName").strip().title()
-                    for v in vernaculars
-                    if v.get("vernacularName")
-                ),
-                None
-            )
+# Step 2: Extract species details and fetch images
+extracted = []
 
-        extracted_animals.append({
-            "scientificName": animal.get("scientificName"),
-            "authorship": animal.get("authorship"),
-            "kingdom": animal.get("kingdom"),
-            "habitats": animal.get("habitats", []),
-            "threatStatuses": animal.get("threatStatuses", []),
-            "vernacularName": best_name
-        })
+for item in species_results:
+    vernacular_names = item.get('vernacularNames', [])
+    vernacular_name = None
 
-    print(json.dumps(extracted_animals, indent=2))
+    # Get English name if available
+    for vn in vernacular_names:
+        if vn.get("lang") == 'eng':
+            vernacular_name = vn.get("vernacularName")
+            break
 
-else:
-    print(f"Request failed with status code {response.status_code}")
+    if not vernacular_name and vernacular_names:
+        vernacular_name = vernacular_names[0].get('vernacularName')
+
+    key = item.get('key')  # taxonKey
+
+    animal_data = {
+        "scientificName": item.get("scientificName"),
+        "authorship": item.get("authorship"),
+        "kingdom": item.get("kingdom"),
+        "rank": item.get("rank"),
+        "status": item.get("taxonomicStatus"),
+        "extinct": item.get("extinct", False),
+        "vernacularName": vernacular_name,
+        "images": get_species_images(key) if key else []  # Limit of 3 images
+    }
+
+    extracted.append(animal_data)
+
+# Step 3: Print nicely formatted JSON
+print(json.dumps(extracted, indent=2))
