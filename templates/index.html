@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Species Catalogue</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      }
+
+      .container {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 70px 60px;
+        border-radius: 20px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+        width: 90%;
+        max-width: 680px;
+      }
+
+      h1 {
+        font-size: 40px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 10px;
+        letter-spacing: 0.5px;
+      }
+
+      .subtitle {
+        font-size: 17px;
+        font-weight: 400;
+        color: #6b7280;
+        margin-bottom: 45px;
+      }
+
+      form {
+        width: 100%;
+      }
+
+      .input-wrapper {
+        position: relative;
+        width: 100%;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 18px 60px 18px 25px;
+        border-radius: 50px;
+        border: 1.5px solid #d1d5db;
+        outline: none;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      input[type="text"]::placeholder {
+        color: #9ca3af;
+      }
+
+      input[type="text"]:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+      }
+
+      button {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 44px;
+        width: 44px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        background: #2563eb;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.25s ease;
+      }
+
+      button:hover {
+        transform: translateY(-50%) scale(1.08);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+      }
+
+      .tips {
+        margin-top: 28px;
+        font-size: 14px;
+        color: #6b7280;
+      }
+
+      .tips span {
+        font-weight: 500;
+        color: #1f2937;
+      }
+
+      @media (max-width: 500px) {
+        .container {
+          padding: 50px 30px;
+        }
+
+        h1 {
+          font-size: 32px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Species Catalogue</h1>
+      <p class="subtitle">Find information about any species</p>
+
+      <form
+        id="searchForm"
+        action="/species"
+        method="get"
+        onsubmit="handleSubmit(event)"
+      >
+        <div class="input-wrapper">
+          <input
+            type="text"
+            name="search"
+            placeholder="Search by common or scientific name (e.g. Lion or Panthera leo)"
+            required
+          />
+          <button type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </form>
+
+      <div class="tips">
+        <span>Tips:</span> Try "Panthera leo", "Monarch butterfly"
+      </div>
+    </div>
+
+    <script>
+      function handleSubmit(event) {
+        event.preventDefault(); // Prevent the form from submitting
+        alert("Hi"); // Your custom logic
+      }
+    </script>
+  </body>
+</html>
