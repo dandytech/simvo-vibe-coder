@@ -1,6 +1,6 @@
 import requests
+from concurrent.futures import ThreadPoolExecutor
 
-# Function to get images for a species using taxonKey
 def get_species_images(species_key, image_limit=3):
     url = 'https://api.gbif.org/v1/occurrence/search'
     params = {
@@ -9,8 +9,10 @@ def get_species_images(species_key, image_limit=3):
         "limit": image_limit
     }
 
-    response = requests.get(url, params=params)
-    if response.status_code != 200:
+    try:
+        response = requests.get(url, params=params, timeout=5)
+        response.raise_for_status()
+    except:
         return []
 
     images = []
@@ -21,24 +23,23 @@ def get_species_images(species_key, image_limit=3):
     return images
 
 
-# 🔥 NEW MAIN FUNCTION
 def search_species(query: str):
     species_url = "https://api.gbif.org/v1/species/search"
-    species_params = {"q": query, "limit": 50}
+    species_params = {"q": query, "limit": 50}  # 🔥 Reduced limit
 
-    species_response = requests.get(species_url, params=species_params)
-
-    if species_response.status_code != 200:
+    try:
+        species_response = requests.get(species_url, params=species_params, timeout=5)
+        species_response.raise_for_status()
+    except:
         return []
 
     species_results = species_response.json().get('results', [])
     extracted = []
 
-    for item in species_results:
+    def process_item(item):
         vernacular_names = item.get('vernacularNames', [])
         vernacular_name = None
 
-        # Get English name if available
         for vn in vernacular_names:
             if vn.get("lang") == 'eng':
                 vernacular_name = vn.get("vernacularName")
@@ -49,17 +50,18 @@ def search_species(query: str):
 
         key = item.get('key')
 
-        animal_data = {
+        return {
             "scientificName": item.get("scientificName"),
             "authorship": item.get("authorship"),
             "kingdom": item.get("kingdom"),
-            "rank": item.get("rank"),
-            "status": item.get("taxonomicStatus"),
             "extinct": item.get("extinct", False),
             "vernacularName": vernacular_name,
+            "habitats": item.get("habitats", []),
             "images": get_species_images(key) if key else []
         }
 
-        extracted.append(animal_data)
+    # 🔥 PARALLEL EXECUTION
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        extracted = list(executor.map(process_item, species_results))
 
     return extracted

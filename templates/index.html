@@ -5,13 +5,10 @@
     <title>Species Catalogue</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Google Font -->
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -26,67 +23,76 @@
 
       body {
         font-family: "Poppins", sans-serif;
-        height: 100vh;
+        min-height: 100vh;
         display: flex;
         justify-content: center;
-        align-items: center;
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        padding: 40px 0;
+        background: linear-gradient(135deg, #141e30, #243b55, #1c92d2);
+        background-size: 400% 400%;
+        animation: gradientMove 12s ease infinite;
+      }
+      @keyframes gradientMove {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
       }
 
       .container {
-        text-align: center;
         background: rgba(255, 255, 255, 0.95);
-        padding: 70px 60px;
+        backdrop-filter: blur(8px);
+        padding: 50px 40px;
         border-radius: 20px;
+        width: 70%;
+        max-width: 1100px;
+        text-align: center;
         box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
-        width: 90%;
-        max-width: 680px;
       }
 
       h1 {
         font-size: 40px;
-        font-weight: 600;
-        color: #1f2937;
+        font-weight: 700;
         margin-bottom: 10px;
-        letter-spacing: 0.5px;
+        background: linear-gradient(90deg, #1c92d2, #f2fcfe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
 
       .subtitle {
         font-size: 17px;
-        font-weight: 400;
-        color: #6b7280;
-        margin-bottom: 45px;
+        color: #555;
+        margin-bottom: 10px;
       }
-
-      form {
-        width: 100%;
+      .tips {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #6b7280;
+      }
+      .tips span {
+        font-weight: 500;
+        color: #1f2937;
       }
 
       .input-wrapper {
         position: relative;
-        width: 100%;
       }
-
       input[type="text"] {
         width: 100%;
         padding: 18px 60px 18px 25px;
         border-radius: 50px;
         border: 1.5px solid #d1d5db;
-        outline: none;
         font-size: 16px;
-        transition: all 0.3s ease;
       }
-
-      input[type="text"]::placeholder {
-        color: #9ca3af;
+      input:focus {
+        border-color: #1c92d2;
+        box-shadow: 0 0 0 4px rgba(28, 146, 210, 0.2);
       }
-
-      input[type="text"]:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
-      }
-
-      button {
+      .submit-btn {
         position: absolute;
         right: 8px;
         top: 50%;
@@ -95,76 +101,334 @@
         width: 44px;
         border-radius: 50%;
         border: none;
-        cursor: pointer;
-        background: #2563eb;
+        background: #1c92d2;
         color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: 0.25s ease;
+        cursor: pointer;
       }
 
-      button:hover {
-        transform: translateY(-50%) scale(1.08);
-        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+      #loader {
+        text-align: center;
+        margin-top: 20px;
+        display: none;
+      }
+      #loader i {
+        font-size: 24px;
+        color: #1c92d2;
+        margin-bottom: 5px;
+      }
+      #resultsContainer {
+        margin-top: 25px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+        text-align: left;
       }
 
-      .tips {
-        margin-top: 28px;
+      .card {
+        background: white;
+        border-radius: 14px;
+        padding: 12px;
         font-size: 14px;
-        color: #6b7280;
+        transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
       }
 
-      .tips span {
-        font-weight: 500;
-        color: #1f2937;
+      .carousel-container {
+        position: relative;
+        margin-bottom: 10px;
+      }
+      .carousel-container img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .carousel-container img:hover {
+        transform: scale(1.05);
       }
 
-      @media (max-width: 500px) {
+      .image-counter {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        background: rgba(0, 0, 0, 0.75);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .carousel-btn {
+        position: absolute;
+        top: 45%;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      .prev {
+        left: 6px;
+      }
+      .next {
+        right: 6px;
+      }
+
+      .species-name {
+        display: inline-block;
+        font-weight: 700;
+        font-size: 15px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        margin-bottom: 6px;
+        background: linear-gradient(90deg, #1c92d2, #00c6ff);
+        color: white;
+      }
+
+      /* Pagination */
+      #pagination {
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      #pagination button {
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: none;
+        background: #1c92d2;
+        color: white;
+        cursor: pointer;
+      }
+      #pagination button.active {
+        background: #0f4c75;
+      }
+
+      /* Fullscreen Modal */
+      #imageModal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      #imageModal img {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: 10px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      }
+      #imageModal .close-btn {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 30px;
+        color: white;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
         .container {
-          padding: 50px 30px;
-        }
-
-        h1 {
-          font-size: 32px;
+          width: 90%;
+          padding: 35px 20px;
         }
       }
     </style>
   </head>
+
   <body>
     <div class="container">
       <h1>Species Catalogue</h1>
-      <p class="subtitle">Find information about any species</p>
+      <p class="subtitle">Find info about any species!</p>
 
-      <form
-        id="searchForm"
-        action="/species"
-        method="get"
-        onsubmit="handleSubmit(event)"
-      >
+      <form onsubmit="handleSubmit(event)">
         <div class="input-wrapper">
           <input
             type="text"
             name="search"
-            placeholder="Search by common or scientific name (e.g. Lion or Panthera leo)"
+            placeholder="Search species..."
             required
           />
-          <button type="submit">
+          <button type="submit" class="submit-btn">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
         </div>
       </form>
 
       <div class="tips">
-        <span>Tips:</span> Try "Panthera leo", "Monarch butterfly"
+        <span>Tips:</span> Try "Panthera leo", "Monarch butterfly" "kangaroo"
       </div>
+
+      <div id="loader">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Loading species...</p>
+      </div>
+
+      <div id="resultsContainer"></div>
+      <div id="pagination"></div>
+    </div>
+
+    <!-- Fullscreen Modal -->
+    <div id="imageModal" onclick="closeModal(event)">
+      <span class="close-btn">&times;</span>
+      <img id="modalImg" src="" />
     </div>
 
     <script>
-      function handleSubmit(event) {
-        event.preventDefault(); // Prevent the form from submitting
-        alert("Hi"); // Your custom logic
+      const itemsPerPage = 12;
+      let currentPage = 1;
+      let currentData = [];
+
+      async function handleSubmit(event) {
+        event.preventDefault();
+        const query = document.querySelector('input[name="search"]').value;
+        const loader = document.getElementById("loader");
+        loader.style.display = "block";
+        try {
+          const res = await fetch(
+            `/species?search=${encodeURIComponent(query)}`,
+          );
+          const json = await res.json();
+          currentData = json.data || [];
+          currentPage = 1;
+          renderPage(currentPage);
+        } catch (err) {
+          alert("Failed to fetch species.");
+        } finally {
+          loader.style.display = "none";
+        }
       }
+
+      function renderPage(page) {
+        const container = document.getElementById("resultsContainer");
+        container.innerHTML = "";
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageData = currentData.slice(start, end);
+
+        pageData.forEach((animal, index) => {
+          const globalIndex = start + index;
+          const images = animal.images || [];
+          let carouselHTML = "";
+          if (images.length > 0) {
+            carouselHTML = `
+      <div class="carousel-container">
+        <img id="img-${globalIndex}" src="${images[0]}" onclick="openModal('${images[0]}')">
+        ${
+          images.length > 1
+            ? `
+        <div class="image-counter" id="counter-${globalIndex}">1 / ${images.length}</div>
+        <button class="carousel-btn prev" onclick="changeImage(${globalIndex},-1)">◀</button>
+        <button class="carousel-btn next" onclick="changeImage(${globalIndex},1)">▶</button>`
+            : ""
+        }
+      </div>`;
+          }
+
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+      ${carouselHTML}
+      <div class="species-name">${animal.vernacularName || animal.scientificName}</div>
+      <em>${animal.scientificName}</em><br>
+      Kingdom: ${animal.kingdom || "Unknown"}<br>
+      Habitats: ${animal.habitats?.join(", ") || "Unknown"}<br>
+      Extinct: ${animal.extinct ? "Yes" : "No"}<br>
+      Authorship: ${animal.authorship || "-"}<br>
+      Images: ${images.length || "None"}
+    `;
+          container.appendChild(card);
+        });
+
+        renderPagination();
+      }
+
+      function changeImage(globalIndex, direction) {
+        const animal = currentData[globalIndex];
+        if (!animal || animal.images.length < 2) return;
+        const img = document.getElementById(`img-${globalIndex}`);
+        const counter = document.getElementById(`counter-${globalIndex}`);
+        let currentIndex = animal.images.indexOf(img.src);
+        let newIndex = currentIndex + direction;
+        if (newIndex < 0) newIndex = animal.images.length - 1;
+        if (newIndex >= animal.images.length) newIndex = 0;
+        img.src = animal.images[newIndex];
+        img.setAttribute("onclick", `openModal('${animal.images[newIndex]}')`);
+        if (counter)
+          counter.textContent = `${newIndex + 1} / ${animal.images.length}`;
+      }
+
+      function renderPagination() {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+        const totalPages = Math.ceil(currentData.length / itemsPerPage);
+        if (totalPages <= 1) return;
+
+        const prevBtn = document.createElement("button");
+        prevBtn.textContent = "Previous";
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.onclick = () => {
+          if (currentPage > 1) {
+            currentPage--;
+            renderPage(currentPage);
+          }
+        };
+        pagination.appendChild(prevBtn);
+
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          if (i === currentPage) btn.className = "active";
+          btn.onclick = () => {
+            currentPage = i;
+            renderPage(currentPage);
+          };
+          pagination.appendChild(btn);
+        }
+
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = "Next";
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.onclick = () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            renderPage(currentPage);
+          }
+        };
+        pagination.appendChild(nextBtn);
+      }
+
+      /* Modal functions */
+      function openModal(src) {
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImg");
+        modalImg.src = src;
+        modal.style.display = "flex";
+      }
+      function closeModal(e) {
+        if (
+          e.target.id === "imageModal" ||
+          e.target.classList.contains("close-btn")
+        ) {
+          document.getElementById("imageModal").style.display = "none";
+        }
+      }
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape")
+          document.getElementById("imageModal").style.display = "none";
+      });
     </script>
   </body>
 </html>
