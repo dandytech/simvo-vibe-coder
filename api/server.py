@@ -4,6 +4,8 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
+
+
 app = FastAPI()
 
 BASE_DIR = Path(__file__).resolve().parent
